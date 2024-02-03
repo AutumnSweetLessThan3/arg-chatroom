@@ -7,6 +7,7 @@ import Input from '@/components/Input';
 import Members from '@/components/Members';
 import Messages from '@/components/Messages';
 import TypingIndicator from '@/components/TypingIndicator';
+import { secret } from '@/support/secret';
 
 function randomName() {
   return 'bot';
@@ -25,6 +26,7 @@ export default function Home() {
     username: randomName(),
     color: randomColor(),
   });
+  const [isVerified, setIsVerified] = useState(false);
 
   const messagesRef = useRef();
   messagesRef.current = messages.length > 7 ? messages.slice(Math.max(messages.length - 7, 1)) : messages;
@@ -92,6 +94,17 @@ export default function Home() {
     });
   }
 
+  const checkPw = () => {
+    // gets the current input value
+    let answer = document.getElementById("password").value;
+    answer = answer.toLowerCase();
+    if (answer === secret) { 
+      setIsVerified(true);
+    } else {
+      alert("INCORRECT");
+    }
+  }
+
   return (
     <>
       <Head>
@@ -102,6 +115,8 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main className={styles.app}>
+        {isVerified 
+        ?
         <div>
         <div className={styles.intro}>CONGRATULATIONS <br /> <br />CALL YOUR NEW FRIENDS WHILE YOU WAIT FOR THE NEXT CLUE</div>
         <div className={styles.appContent}>
@@ -113,7 +128,14 @@ export default function Home() {
             onChangeTypingState={onChangeTypingState}
           />
         </div>
-        </div>
+        </div> 
+        :
+        <div className={styles.password}>
+          <form onSubmit={checkPw}>
+            <input id="password" name="password" />
+            <button placeholder="ENTER PASSWORD">CHECK PASSWORD</button>
+          </form>
+        </div>}
       </main>
     </>
   )
